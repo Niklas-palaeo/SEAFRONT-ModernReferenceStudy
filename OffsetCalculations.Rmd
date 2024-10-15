@@ -1,0 +1,165 @@
+---
+title: "calculation2"
+author: "Danai"
+date: "2023-11-21"
+output: html_document
+---
+
+
+```{r}
+library(ggplot2)
+library(tidyr)
+library(readxl)
+library(patchwork)
+library(extrafont)
+```
+
+##universal offset -0.32 per mille
+```{r}
+# Read your data from Excel
+df <- read_excel("calculations2.xlsx", sheet = "Sheet1")
+```
+
+```{r}
+# Reshape the data into long format using tidyr
+df_long <- gather(df, key = "Location", value = "Value")
+```
+
+```{r}
+# Plotting with ggplot2
+p1 <- ggplot(df_long, aes(x = Location, y = Value, color = Location)) +
+  geom_jitter(width = 0.2, height = 0, alpha = 0.7) +
+  labs(title = "Instrumental and calculated SST differences (−0.32‰)",
+       x = "Locations",
+       y = "Degree celcius") +
+  theme_minimal()+
+  theme(
+    plot.title = element_text(size = 11),
+    axis.title.x = element_blank(),
+    #axis.text.x = element_blank()
+    # axis.title.y = element_text(size = 10)  # You can uncomment and adjust this line if needed
+  )
+
+print(p1)
+ggsave(filename = "calc_univ_offset2.png", plot = p1,
+      width = 6, height = 4, dpi = 300)
+```
+
+##Individual offsets
+```{r}
+# Read your data from Excel
+df2 <- read_excel("calculations2.xlsx", sheet = "Sheet2")
+```
+
+```{r}
+# Reshape the data into long format using tidyr
+df_long2 <- gather(df2, key = "Location", value = "Value")
+```
+
+```{r}
+# Plotting with ggplot2
+p2 <- ggplot(df_long2, aes(x = Location, y = Value, color = Location)) +
+  geom_jitter(width = 0.2, height = 0, alpha = 0.7) +
+  labs(title = "Instrumental and calculated SST differences (location-specific offsets)",
+       x = "Locations",
+       y = "Degree celcius") +
+  theme_minimal()+
+  theme(
+    plot.title = element_text(size = 11),
+    axis.title.x = element_blank(),
+    #axis.text.x = element_blank()
+    # axis.title.y = element_text(size = 10)  # You can uncomment and adjust this line if needed
+  ) +
+  ylim(-6.5, 10)
+
+print(p2)
+#ggsave(filename = "calc_univ_individual_offsets.png", plot = p2,
+      width = 6, height = 4, dpi = 300)
+```
+
+##combined
+```{r}
+# Specify the Century font
+loadfonts(device = "win")  # Load fonts for Windows, use loadfonts(device = "pdf") for pdf output
+windowsFonts(Century = windowsFont("Century"))
+
+# Set the global font family to Century
+theme_set(theme_minimal(base_family = "Century"))
+
+# Plotting with ggplot2
+p1 <- ggplot(df_long, aes(x = Location, y = Value, color = Location)) +
+  geom_jitter(width = 0.2, height = 0, alpha = 0.7) +
+  labs(title = "Universal negative 0.32‰ offset",
+       x = "Locations",
+       y = "Degree celcius") +
+  theme(
+    plot.title = element_text(size = 11, family = "Century"),
+    axis.title.x = element_blank(),
+    legend.position = "none"
+  ) 
+
+#ggsave(filename = "universal_offset.png", plot = p1, width = 6, height = 5, dpi = 300)
+
+# Plotting with ggplot2
+p2 <- ggplot(df_long2, aes(x = Location, y = Value, color = Location)) +
+  geom_jitter(width = 0.2, height = 0, alpha = 0.7) +
+  labs(title = "Location-specific offsets",
+       x = "Locations",
+       y = "Degree celcius") +
+  theme(
+    plot.title = element_text(size = 11, family = "Century"),
+    axis.title.x = element_blank(),
+    legend.position = "none"
+  ) +  coord_cartesian(ylim = c(-6.5, 10))  
+
+# Combine the plots using grid.arrange
+combined_plot <- p1 + plot_spacer() + p2 + plot_layout(ncol = 1, heights = c(1, 0.1, 1))
+
+# Save the combined plot
+ggsave(filename = "combined_plot2.png", plot = combined_plot, width = 8, height = 8, dpi = 300)
+```
+
+##no offset 
+```{r}
+# Read your data from Excel
+df3 <- read_excel("calculations2.xlsx", sheet = "Sheet3")
+```
+
+```{r}
+# Reshape the data into long format using tidyr
+df_long3 <- gather(df3, key = "Location", value = "Value")
+```
+
+```{r}
+# Specify the Century font
+loadfonts(device = "win")  # Load fonts for Windows, use loadfonts(device = "pdf") for pdf output
+windowsFonts(Century = windowsFont("Century"))
+
+# Set the global font family to Century
+theme_set(theme_minimal(base_family = "Century"))
+
+# Plotting with ggplot2
+p3 <- ggplot(df_long3, aes(x = Location, y = Value, color = Location)) +
+  geom_jitter(width = 0.2, height = 0, alpha = 0.7) +
+  labs(title = "No offset",
+       x = "Locations",
+       y = "Degree celcius") +
+  theme(
+    plot.title = element_text(size = 11, family = "Century"),
+    axis.title.x = element_blank(),
+    legend.position = "none"
+  ) +  coord_cartesian(ylim = c(-6.5, 12))
+
+
+print(p3)
+#ggsave(filename = "calc_univ_no_offset.png", plot = p3, width = 6, height = 4, dpi = 300)
+```
+
+##2 and 3 combined
+```{r}
+# Combine the plots using grid.arrange
+combined_plot <- p3 + plot_spacer() + p2 + plot_layout(ncol = 1, heights = c(1, 0.1, 1))
+
+# Save the combined plot
+ggsave(filename = "combined_plot3.png", plot = combined_plot, width = 8, height = 8, dpi = 300)
+```
