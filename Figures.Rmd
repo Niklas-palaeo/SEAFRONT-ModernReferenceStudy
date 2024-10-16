@@ -6,7 +6,7 @@ output: pdf_document
 ---
 
 # Libraries 
-```{r Libraries,echo=FALSE,message = FALSE,warning = FALSE}
+```{r,echo=FALSE,message = FALSE,warning = FALSE}
 knitr::opts_chunk$set(echo=FALSE,message = FALSE,warning = FALSE)
 
 {
@@ -14,18 +14,24 @@ knitr::opts_chunk$set(echo=FALSE,message = FALSE,warning = FALSE)
     here,
     janitor,
     tidyverse,
-    cowplot,ggx,
+    cowplot,ggx,ggeasy,
     patchwork,
     RColorBrewer,
     readxl) 
   
   theme_set(theme_cowplot())
+  
+PALETTE <- c(
+ "#0072B2", # Blue
+  "#E69F00",  # Orange
+  "#009E73",  # Green
+  "#332288") # purple 
 }
 ```
 
 # Data
 
-```{r}
+```{r All Data}
 
 ElementSeasonData <- tibble(
   result = c('Preceding', 'Preceding/Actual', 'Actual', 'Subsequent/Actual','Subsequent', 'Uncertain'),
@@ -36,19 +42,49 @@ ElementSeasonData <- tibble(
                 result = recode(result, 'Preceding/Actual' = 'Preceding/\nActual'))  # Insert newline
 
 
-Offsets <- read_excel(here("data","calculations2.xlsx"), sheet = "Sheet3") %>% 
+No_Offsets <- read_excel(here("data","calculations2.xlsx"), sheet = "Sheet3") %>% 
+  pivot_longer(cols = everything(), names_to = "location", values_to = "sst") %>% 
+  mutate(location = factor(location, levels = c("Faro Punta Sottile","Tonnara del Secco","Franchthi","Youra")))
+
+Offsets <- read_excel(here("data","calculations2.xlsx"), sheet = "Sheet2") %>% 
   pivot_longer(cols = everything(), names_to = "location", values_to = "sst") %>% 
   mutate(location = factor(location, levels = c("Faro Punta Sottile","Tonnara del Secco","Franchthi","Youra")))
 
 
+# Below for modern SST
+file_paths <- c(here("data","tonnara.xls"), here("data","franchthi.xls"),here("data" ,"youra.xls"),here("data", "favignana.xls"))
+sheets <- c("Sheet1", "Sheet1", "Sheet1", "Sheet1")
+locations <- c("Tonnara del Secco", "Franchthi", "Youra", "Faro Punta Sottile")
+
+data_list <- lapply(1:length(file_paths), function(i) {
+  data <- read_excel(file_paths[i], sheet = sheets[i])
+  data$Location <- locations[i]
+  data
+})
+
+combined_data <- bind_rows(data_list)
+
+combined_data$Month <- factor(combined_data$Month, levels = unique(combined_data$Month))
+ 
+SSTs <- combined_data %>% 
+   clean_names() %>% 
+   mutate(location = factor(location, levels = c("Faro Punta Sottile","Tonnara del Secco","Franchthi","Youra"))) %>% 
+    mutate(month = factor(month, 
+                        levels = month.name, 
+                        labels = substr(month.name, 1, 3)))
+
+
+
+### Correlation data
+
+Correlation <- readRDS(here("data","Correlation_data.RDS"))
 
 
 ```
 
 
-
-# Fig. Results LIBS Seasons
-```{r}
+# Figures
+```{r Results LIBS Seasons}
 
 ElementSeasonData %>% 
   ggplot()+
@@ -68,16 +104,209 @@ scale_fill_manual(
 ```
 
 
+```{r Offsets}
 
-# Fig. Offsets
-```{r}
-
-ggplot(Offsets, aes(y = location, x = sst)) +
-  geom_boxplot(width=0.2,show.legend=FALSE,outliers = FALSE)+
-  geom_point(show.legend = FALSE) +
+NoOffPlot <- ggplot(No_Offsets, aes(y = location, x = sst,fill=location, col=location)) +
+  geom_boxplot(width=1,show.legend=FALSE,outliers = FALSE,alpha=0.2)+
+  geom_point(show.legend = FALSE,size=1) +
   geom_vline(xintercept = 0,linetype="dashed")+
+  scale_colour_manual(values = PALETTE) +
+   scale_fill_manual(values = PALETTE) +
+  theme_cowplot(10)+
+  xlim(-7,12)+
+  labs(y = "",
+       x = "")
+
+
+OffPlot <- ggplot(Offsets, aes(y = location, x = sst,fill=location, col=location)) +
+  geom_boxplot(width=1,show.legend=FALSE,outliers = FALSE,alpha=0.2)+
+  geom_point(show.legend = FALSE,size=1) +
+  geom_vline(xintercept = 0,linetype="dashed")+
+  scale_colour_manual(values = PALETTE) +
+   scale_fill_manual(values = PALETTE) +
+  theme_cowplot(10)+
+  xlim(-7,12)+
   labs(y = "",
        x = "SST difference between instrumental and calcuated values [ºC]")
+
+
+NoOffPlot/OffPlot+plot_annotation(tag_levels = "A")
+
+ggsave(
+  filename = here("Figures","FigOffsets.png"),
+  width = 17,
+  height = 16,
+  units = "cm",
+  dpi = 300
+)
+```
+
+```{r SSTs}
+
+
+ggplot(SSTs, aes(x = month, y = temperature, color = location, group = location)) +
+  geom_line(linewidth = 1.2) +                            
+  geom_point() +                                     
+  geom_errorbar(aes(ymin = temperature - sd, ymax = temperature + sd), 
+                width = 0.2) +                       
+  labs(
+    title = "Mean Sea Surface Temperatures at different locations",
+    x = "",
+    y = expression(paste("Temperature (", degree, "C)")),
+    colour="") + 
+    scale_colour_manual(values = PALETTE) +
+  theme_cowplot(8)+
+  theme(legend.position = c(0.1, 0.6)) + 
+  ylim(13, 28)                            
+
+ggsave(
+  filename = here("Figures","FigSST.png"),
+  width = 17,          
+  height = 12,        
+  units = "cm",         
+  dpi = 300              
+)
+```
+
+```{r Correlations}
+
+# New palette
+
+PALETTE_expanded <-c(
+  # Blues
+  "#0072B2", # Blue 1
+  "#56B4E9", # Blue 2 (lighter)
+  "#2646D3", # Blue 3 (darker)
+  
+
+  # Greens
+  "#009E73",  # Green 1
+  "#66C2A5",  # Green 2
+  "#2CA25F",  # Green 3
+  "#238B45",  # Green 4 (darker)
+  "#2CA25F",  # Green 5
+  "#99D8C9",  # Green 6 (lighter)
+  "#00441B",  # Green 7 (darkest)
+  # Oranges
+  "#E69F00",  # Orange 1
+  "#F0E442",  # Orange 2 (lighter)
+  "#D55E00",  # Orange 3 (darker)
+
+  # Purples
+  "#332288",  # Purple 1
+  "#756BB1",  # Purple 2
+  "#9E9AC8",  # Purple 3 (lighter)
+  "#6A51A3"   # Purple 4 (darker)
+)
+
+
+
+Plot_Corr <- Correlation %>% 
+  pivot_wider(names_from = "proxy", values_from = "value") %>% 
+  mutate(location = case_when(
+    str_starts(shell, "FPS") ~ "Faro Punta Sottile",
+    str_starts(shell, "TS")  ~ "Tonnara del Secco",
+    str_starts(shell, "FR") ~ "Franchthi",
+    str_starts(shell, "Y")   ~ "Youra"
+  )) %>%
+  mutate(location = factor(location, levels = c("Faro Punta Sottile", "Tonnara del Secco", "Franchthi", "Youra"))) %>% 
+  arrange(x) %>% 
+  ggplot()+
+  aes(x=d18o,y=mg_ca,col=shell)+
+  geom_point(show.legend = FALSE,size=1)+
+  labs(x=expression(paste(delta^{18},"O (\u2030)")),y="Mg/Ca intensity ratio")+
+  stat_smooth(aes(fill = shell,col=shell), method = "lm", formula = y~x,show.legend = FALSE) +
+  facet_wrap(~location)+
+  scale_colour_manual(values = PALETTE_expanded)+
+  scale_fill_manual(values = PALETTE_expanded)+
+  theme(
+  strip.background = element_rect(fill = "white", colour = "white"),  # White background and border
+  strip.text = element_text(hjust = 0))
+
+
+ 
+
+
+
+
+
+
+
+```
+
+```{r Correlation Table}
+
+
+library(gt)
+
+Summary_Correlation <- Correlation %>% 
+  pivot_wider(names_from = "proxy", values_from = "value") %>% 
+  mutate(location = case_when(
+    str_starts(shell, "FPS") ~ "Faro Punta Sottile",
+    str_starts(shell, "TS")  ~ "Tonnara del Secco",
+    str_starts(shell, "FR") ~ "Franchthi",
+    str_starts(shell, "Y")   ~ "Youra"
+  )) %>%
+  mutate(location = factor(location, levels = c("Faro Punta Sottile", "Tonnara del Secco", "Franchthi", "Youra"))) %>% 
+  group_by(shell) %>%
+  summarise(
+    r_squared = summary(lm(mg_ca ~ d18o))$r.squared,  # Calculate R^2 value
+    location = first(location)  # Get location for each shell
+  ) %>%
+  ungroup() %>%  # Ungroup for tidy output
+  select(location, shell, r_squared)   # Select relevant columns
+  # mutate(  # Assign corresponding colour to each shell
+  #        location = ifelse(duplicated(location), "", as.character(location)))  # Only show first instance of location
+
+
+
+# Create the table with gt
+Table <- Summary_Correlation %>%
+    dplyr::mutate(color = "") |>
+  gt(groupname_col = "location") %>%
+  cols_label(
+    # location = "Location",
+    shell = "Shell",
+    r_squared = html("R<sup>2</sup> Value"),
+    color = ""
+  ) %>%
+# data_color(
+#     columns = population,
+#     target_columns = color,
+#     method = "numeric",
+#     palette = "viridis",
+#     domain = c(4E7, 7E7)
+#   )
+    # data_color(columns = shell, palette = PALETTE_expanded) %>% 
+    data_color(columns = shell,target_columns = shell, palette = PALETTE_expanded,ordered = TRUE) %>% 
+  cols_width( shell ~ px(100), r_squared ~ px(100), color ~ px(10)) |>
+
+  # tab_style(
+  #   style = cell_text(color = Summary_Correlation$shell_colour),  # Use pre-calculated colours
+  #   locations = cells_body(columns = "shell")
+  # ) %>%
+  tab_header(
+    title = "Correlation Table by Shell and Location"
+  ) %>%
+  cols_align(
+    align = "left", columns = c("shell")
+  ) %>%
+  cols_align(
+    align = "center", columns = c("r_squared")
+  ) %>%
+  fmt_number(
+    columns = "r_squared", decimals = 2
+  )
+
+Plot_Corr+wrap_table(Table,space = "fixed")
+ 
+ggsave(
+  filename = here("Figures","FigCorrelations.png"),
+  width = 40,
+  height = 30,
+  units = "cm",
+  dpi = 300
+)
 
 ```
 
