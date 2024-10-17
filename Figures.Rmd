@@ -26,6 +26,34 @@ PALETTE <- c(
   "#E69F00",  # Orange
   "#009E73",  # Green
   "#332288") # purple 
+
+PALETTE_expanded <-c(
+  # Blues
+  "#0072B2", # Blue 1
+  "#56B4E9", # Blue 2 (lighter)
+  "#2646D3", # Blue 3 (darker)
+  
+
+  # Greens
+  "#009E73",  # Green 1
+  "#66C2A5",  # Green 2
+  "#2CA25F",  # Green 3
+  "#238B45",  # Green 4 (darker)
+  "#2CA25F",  # Green 5
+  "#99D8C9",  # Green 6 (lighter)
+  "#00441B",  # Green 7 (darkest)
+  # Oranges
+  "#E69F00",  # Orange 1
+  "#F0E442",  # Orange 2 (lighter)
+  "#D55E00",  # Orange 3 (darker)
+
+  # Purples
+  "#332288",  # Purple 1
+  "#756BB1",  # Purple 2
+  "#9E9AC8",  # Purple 3 (lighter)
+  "#6A51A3"   # Purple 4 (darker)
+)
+
 }
 ```
 
@@ -80,10 +108,107 @@ SSTs <- combined_data %>%
 Correlation <- readRDS(here("data","Correlation_data.RDS"))
 
 
+### Modern Shell data sequential
+
+ModSeq <- read_csv(here("data","ModernSequences.csv"),col_names = TRUE,show_col_types = FALSE) %>% 
+  clean_names() %>% 
+  group_by(shell,proxy) %>% 
+  mutate(sequence=row_number()) %>% 
+  ungroup() %>% 
+  mutate(sequence=if_else(proxy=="mg_ca",sequence*0.03,sequence))
+
+
 ```
 
 
 # Figures
+
+```{r Modern Sequences}
+
+# List of unique shells
+shells <- ModSeq %>% arrange(location) %>% pull(shell) %>% unique()
+
+# Empty list to store plots
+plot_list <- list()
+
+
+
+# Create individual plots for each shell in a for loop
+for (shell_name in shells) {
+  
+  # Plot for d18O
+  d18O_plot <- 
+    ModSeq %>% 
+    filter(shell == shell_name, proxy == "d18o") %>% 
+    ggplot() +
+    aes(sequence, value, col = shell) +
+    geom_path(show.legend = FALSE) +
+    geom_point(show.legend = FALSE) +
+    scale_colour_manual(values = PALETTE_expanded[which(shells == shell_name)]) +
+    scale_fill_manual(values = PALETTE_expanded[which(shells == shell_name)]) +
+    scale_y_reverse(breaks = scales::pretty_breaks(n = 3)) + # Ensures full integers
+    labs(x = "Distance to edge by sample number", y = bquote(delta^18*O~ (VPDB)),title = paste(shell_name)) +
+    theme_cowplot()
+  
+  
+  # Plot for MgCa
+  MgCa_plot <- 
+    ModSeq %>% 
+    filter(shell == shell_name, proxy == "mg_ca") %>% 
+    ggplot() +
+    aes(sequence, value, col = shell) +
+    geom_path(show.legend = FALSE) +
+    geom_point(show.legend = FALSE) +
+    scale_colour_manual(values = PALETTE_expanded[which(shells == shell_name)]) +
+    scale_fill_manual(values = PALETTE_expanded[which(shells == shell_name)]) +
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 3)) + # Ensures full integers
+    labs(x = "Distance to edge [mm]", title = paste(shell_name),y="Mg/Ca intensity ratio (a.u.)") +
+    theme_cowplot()
+  
+  # Add the two plots (d18O and MgCa) to the list
+  plot_list[[length(plot_list) + 1]] <- plot_grid(d18O_plot, MgCa_plot, ncol = 2)
+}
+
+# Arrange all the plots in a grid (14 rows, 2 columns for each pair)
+final_plot_A <- plot_grid(plotlist = plot_list[1:6], ncol = 1)
+final_plot_B <- plot_grid(plotlist = plot_list[7:10], ncol = 1)
+final_plot_C <- plot_grid(plotlist = plot_list[11:14], ncol = 1)
+
+
+ggsave(
+  plot =   final_plot_A,
+  filename = here("Figures","FigModSeq1.png"),
+  width = 25,
+  height = 50,
+  units = "cm",
+  dpi = 300
+)
+
+ggsave(
+  plot =   final_plot_B,
+  filename = here("Figures","FigModSeq2.png"),
+  width = 25,
+  height = 40,
+  units = "cm",
+  dpi = 300
+)
+ggsave(
+  plot =   final_plot_C,
+  filename = here("Figures","FigModSeq3.png"),
+  width = 25,
+  height = 40,
+  units = "cm",
+  dpi = 300
+)
+
+
+
+```
+
+
+
+
+
 ```{r Results LIBS Seasons}
 
 ElementSeasonData %>% 
@@ -172,36 +297,12 @@ ggsave(
 
 # New palette
 
-PALETTE_expanded <-c(
-  # Blues
-  "#0072B2", # Blue 1
-  "#56B4E9", # Blue 2 (lighter)
-  "#2646D3", # Blue 3 (darker)
-  
-
-  # Greens
-  "#009E73",  # Green 1
-  "#66C2A5",  # Green 2
-  "#2CA25F",  # Green 3
-  "#238B45",  # Green 4 (darker)
-  "#2CA25F",  # Green 5
-  "#99D8C9",  # Green 6 (lighter)
-  "#00441B",  # Green 7 (darkest)
-  # Oranges
-  "#E69F00",  # Orange 1
-  "#F0E442",  # Orange 2 (lighter)
-  "#D55E00",  # Orange 3 (darker)
-
-  # Purples
-  "#332288",  # Purple 1
-  "#756BB1",  # Purple 2
-  "#9E9AC8",  # Purple 3 (lighter)
-  "#6A51A3"   # Purple 4 (darker)
-)
+ModSeq %>% ungroup() %>% select(shell) %>% unique()
 
 
 
 Plot_Corr <- Correlation %>% 
+  filter(!(shell=="FR-P_A"|shell=="FR-P_B"|shell=="FR-P_C")) %>% 
   pivot_wider(names_from = "proxy", values_from = "value") %>% 
   mutate(location = case_when(
     str_starts(shell, "FPS") ~ "Faro Punta Sottile",
