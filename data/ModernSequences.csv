@@ -2,15 +2,15 @@ location,shell,proxy,value,std
 Faro Punta Sottile,FPS-E_D,d18o,1.55,0.05
 Faro Punta Sottile,FPS-E_D,d18o,1.67,0.04
 Faro Punta Sottile,FPS-E_D,d18o,1.88,0.03
-Faro Punta Sottile,FPS-E_D,d18o,1.90,0.04
-Faro Punta Sottile,FPS-E_D,d18o,1.90,0.04
+Faro Punta Sottile,FPS-E_D,d18o,1.9,0.04
+Faro Punta Sottile,FPS-E_D,d18o,1.9,0.04
 Faro Punta Sottile,FPS-E_D,d18o,1.51,0.03
 Faro Punta Sottile,FPS-E_D,d18o,1.38,0.05
 Faro Punta Sottile,FPS-E_D,d18o,1.19,0.05
 Faro Punta Sottile,FPS-E_D,d18o,0.52,0.05
-Faro Punta Sottile,FPS-E_D,d18o,0.00,0.04
+Faro Punta Sottile,FPS-E_D,d18o,0,0.04
 Faro Punta Sottile,FPS-E_D,d18o,-0.24,0.03
-Faro Punta Sottile,FPS-E_D,d18o,1.80,0.04
+Faro Punta Sottile,FPS-E_D,d18o,1.8,0.04
 Faro Punta Sottile,FPS-E_D,d18o,2.08,0.05
 Faro Punta Sottile,FPS-E_D,d18o,2.24,0.05
 Faro Punta Sottile,FPS-E_D,d18o,2.16,0.05
@@ -158,7 +158,7 @@ Faro Punta Sottile,FPS-E_D,mg_ca,0.579015502,0.017893451
 Faro Punta Sottile,FPS-E_D,mg_ca,0.58774078,0.025969095
 Faro Punta Sottile,FPS-E_D,mg_ca,0.584166862,0.024272405
 Faro Punta Sottile,FPS-E_C,d18o,1.85,0.03
-Faro Punta Sottile,FPS-E_C,d18o,2.00,0.04
+Faro Punta Sottile,FPS-E_C,d18o,2,0.04
 Faro Punta Sottile,FPS-E_C,d18o,2.15,0.03
 Faro Punta Sottile,FPS-E_C,d18o,2.07,0.05
 Faro Punta Sottile,FPS-E_C,d18o,1.98,0.05
@@ -1227,7 +1227,7 @@ Tonnara del Secco,TS-W_B,d18o,1.03,0.06
 Tonnara del Secco,TS-W_B,d18o,1.42,0.05
 Tonnara del Secco,TS-W_B,d18o,1.64,0.04
 Tonnara del Secco,TS-W_B,d18o,1.73,0.07
-Tonnara del Secco,TS-W_B,d18o,1.70,0.03
+Tonnara del Secco,TS-W_B,d18o,1.7,0.03
 Tonnara del Secco,TS-W_B,d18o,1.66,0.06
 Tonnara del Secco,TS-W_B,d18o,1.72,0.09
 Tonnara del Secco,TS-W_B,d18o,1.72,0.04
@@ -1538,7 +1538,7 @@ Tonnara del Secco,TS-E_B,d18o,0.67,0.03
 Tonnara del Secco,TS-E_B,d18o,0.54,0.04
 Tonnara del Secco,TS-E_B,d18o,0.53,0.03
 Tonnara del Secco,TS-E_B,d18o,0.31,0.04
-Tonnara del Secco,TS-E_B,d18o,0.50,0.05
+Tonnara del Secco,TS-E_B,d18o,0.5,0.05
 Tonnara del Secco,TS-E_B,d18o,0.42,0.04
 Tonnara del Secco,TS-E_B,d18o,0.68,0.03
 Tonnara del Secco,TS-E_B,d18o,0.69,0.06
@@ -1862,7 +1862,7 @@ Franchthi,FR-P_C,d18o,1.12,0.07
 Franchthi,FR-P_C,d18o,1.41,0.08
 Franchthi,FR-P_C,d18o,1.52,0.12
 Franchthi,FR-P_C,d18o,1.48,0.08
-Franchthi,FR-P_C,d18o,1.56,0.10
+Franchthi,FR-P_C,d18o,1.56,0.1
 Franchthi,FR-P_C,d18o,1.68,0.07
 Franchthi,FR-P_C,d18o,1.71,0.07
 Franchthi,FR-P_C,d18o,1.75,0.05
@@ -1880,7 +1880,7 @@ Franchthi,FR-P_C,d18o,-0.47,0.09
 Franchthi,FR-P_C,d18o,-0.45,0.06
 Franchthi,FR-P_C,d18o,-0.24,0.07
 Franchthi,FR-P_C,d18o,-0.11,0.07
-Franchthi,FR-P_C,d18o,0.28,0.10
+Franchthi,FR-P_C,d18o,0.28,0.1
 Franchthi,FR-P_C,d18o,0.59,0.07
 Franchthi,FR-P_C,d18o,0.89,0.05
 Franchthi,FR-P_C,mg_ca,0.689966434,0.043880012
@@ -2006,7 +2006,7 @@ Franchthi,FR-P_G,d18o,0.78,0.06
 Franchthi,FR-P_G,d18o,0.83,0.07
 Franchthi,FR-P_G,d18o,1.23,0.05
 Franchthi,FR-P_G,d18o,1.29,0.08
-Franchthi,FR-P_G,d18o,1.39,0.10
+Franchthi,FR-P_G,d18o,1.39,0.1
 Franchthi,FR-P_G,d18o,1.54,0.06
 Franchthi,FR-P_G,d18o,1.58,0.06
 Franchthi,FR-P_G,d18o,1.39,0.08
@@ -2148,7 +2148,7 @@ Franchthi,FR-P_H,d18o,1.71,0.09
 Franchthi,FR-P_H,d18o,1.51,0.06
 Franchthi,FR-P_H,d18o,0.74,0.08
 Franchthi,FR-P_H,d18o,-0.34,0.06
-Franchthi,FR-P_H,d18o,-0.41,0.10
+Franchthi,FR-P_H,d18o,-0.41,0.1
 Franchthi,FR-P_H,d18o,-0.63,0.07
 Franchthi,FR-P_H,d18o,-0.65,0.08
 Franchthi,FR-P_H,mg_ca,0.642587877,0.016251808
@@ -2199,25 +2199,25 @@ Franchthi,FR-P_I,d18o,0.73,0.07
 Franchthi,FR-P_I,d18o,0.79,0.09
 Franchthi,FR-P_I,d18o,0.75,0.07
 Franchthi,FR-P_I,d18o,0.95,0.07
-Franchthi,FR-P_I,d18o,1.21,0.10
+Franchthi,FR-P_I,d18o,1.21,0.1
 Franchthi,FR-P_I,d18o,1.28,0.08
 Franchthi,FR-P_I,d18o,1.01,0.05
 Franchthi,FR-P_I,d18o,0.32,0.08
 Franchthi,FR-P_I,d18o,1.14,0.09
 Franchthi,FR-P_I,d18o,0.51,0.06
-Franchthi,FR-P_I,d18o,-0.20,0.12
+Franchthi,FR-P_I,d18o,-0.2,0.12
 Franchthi,FR-P_I,d18o,0.54,0.09
-Franchthi,FR-P_I,d18o,0.20,0.07
+Franchthi,FR-P_I,d18o,0.2,0.07
 Franchthi,FR-P_I,d18o,0.47,0.05
 Franchthi,FR-P_I,d18o,0.09,0.07
-Franchthi,FR-P_I,d18o,0.40,0.05
+Franchthi,FR-P_I,d18o,0.4,0.05
 Franchthi,FR-P_I,d18o,0.43,0.09
 Franchthi,FR-P_I,d18o,0.83,0.06
-Franchthi,FR-P_I,d18o,1.00,0.10
+Franchthi,FR-P_I,d18o,1,0.1
 Franchthi,FR-P_I,d18o,1.24,0.08
 Franchthi,FR-P_I,d18o,1.46,0.07
 Franchthi,FR-P_I,d18o,1.16,0.09
-Franchthi,FR-P_I,d18o,1.60,0.07
+Franchthi,FR-P_I,d18o,1.6,0.07
 Franchthi,FR-P_I,d18o,1.35,0.09
 Franchthi,FR-P_I,d18o,1.19,0.05
 Franchthi,FR-P_I,d18o,1.21,0.09
@@ -2229,7 +2229,7 @@ Franchthi,FR-P_I,d18o,0.63,0.09
 Franchthi,FR-P_I,d18o,0.79,0.08
 Franchthi,FR-P_I,d18o,0.89,0.07
 Franchthi,FR-P_I,d18o,0.42,0.09
-Franchthi,FR-P_I,d18o,0.28,0.10
+Franchthi,FR-P_I,d18o,0.28,0.1
 Franchthi,FR-P_I,d18o,-0.17,0.09
 Franchthi,FR-P_I,mg_ca,0.731487248,0.078511144
 Franchthi,FR-P_I,mg_ca,0.734699898,0.073968048
@@ -2301,17 +2301,17 @@ Youra,Y-S_A,d18o,1.26,0.04
 Youra,Y-S_A,d18o,1.44,0.04
 Youra,Y-S_A,d18o,1.33,0.06
 Youra,Y-S_A,d18o,1.46,0.06
-Youra,Y-S_A,d18o,1.10,0.03
+Youra,Y-S_A,d18o,1.1,0.03
 Youra,Y-S_A,d18o,1.46,0.04
 Youra,Y-S_A,d18o,1.83,0.04
 Youra,Y-S_A,d18o,1.95,0.06
-Youra,Y-S_A,d18o,1.80,0.04
+Youra,Y-S_A,d18o,1.8,0.04
 Youra,Y-S_A,d18o,2.08,0.09
 Youra,Y-S_A,d18o,2.31,0.05
 Youra,Y-S_A,d18o,2.15,0.04
 Youra,Y-S_A,d18o,2.13,0.05
 Youra,Y-S_A,d18o,1.72,0.04
-Youra,Y-S_A,d18o,1.50,0.03
+Youra,Y-S_A,d18o,1.5,0.03
 Youra,Y-S_A,d18o,0.85,0.04
 Youra,Y-S_A,d18o,0.48,0.05
 Youra,Y-S_A,d18o,1.31,0.06
@@ -2324,7 +2324,7 @@ Youra,Y-S_A,d18o,2.12,0.04
 Youra,Y-S_A,d18o,1.96,0.03
 Youra,Y-S_A,d18o,2.03,0.05
 Youra,Y-S_A,d18o,1.62,0.04
-Youra,Y-S_A,d18o,1.80,0.04
+Youra,Y-S_A,d18o,1.8,0.04
 Youra,Y-S_A,mg_ca,0.744488279,0.018595577
 Youra,Y-S_A,mg_ca,0.789326914,0.028248254
 Youra,Y-S_A,mg_ca,0.795144504,0.013392202
@@ -2412,81 +2412,81 @@ Youra,Y-W_B,d18o,1.73,0.04
 Youra,Y-W_B,d18o,0.46,0.06
 Youra,Y-W_B,d18o,1.36,0.08
 Youra,Y-W_B,d18o,2.25,0.06
-Youra,Y-W_B,d18o,2.20,0.03
+Youra,Y-W_B,d18o,2.2,0.03
 Youra,Y-W_B,d18o,1.67,0.05
 Youra,Y-W_B,d18o,0.43,0.06
-Youra,Y-W_B,mg_ca,1.04983271,1.04983271
-Youra,Y-W_B,mg_ca,0.893242731,0.893242731
-Youra,Y-W_B,mg_ca,0.741471003,0.741471003
-Youra,Y-W_B,mg_ca,0.713085675,0.713085675
-Youra,Y-W_B,mg_ca,0.688056261,0.688056261
-Youra,Y-W_B,mg_ca,0.711139592,0.711139592
-Youra,Y-W_B,mg_ca,0.758101467,0.758101467
-Youra,Y-W_B,mg_ca,0.671596835,0.671596835
-Youra,Y-W_B,mg_ca,0.658793043,0.658793043
-Youra,Y-W_B,mg_ca,0.639694042,0.639694042
-Youra,Y-W_B,mg_ca,0.667112028,0.667112028
-Youra,Y-W_B,mg_ca,0.628768176,0.628768176
-Youra,Y-W_B,mg_ca,0.627112292,0.627112292
-Youra,Y-W_B,mg_ca,0.655508741,0.655508741
-Youra,Y-W_B,mg_ca,0.751089632,0.751089632
-Youra,Y-W_B,mg_ca,0.815491088,0.815491088
-Youra,Y-W_B,mg_ca,0.872061944,0.872061944
-Youra,Y-W_B,mg_ca,0.857361235,0.857361235
-Youra,Y-W_B,mg_ca,0.903509436,0.903509436
-Youra,Y-W_B,mg_ca,0.951616465,0.951616465
-Youra,Y-W_B,mg_ca,0.801378479,0.801378479
-Youra,Y-W_B,mg_ca,0.8574769,0.8574769
-Youra,Y-W_B,mg_ca,0.949805271,0.949805271
-Youra,Y-W_B,mg_ca,0.925675557,0.925675557
-Youra,Y-W_B,mg_ca,0.932355364,0.932355364
-Youra,Y-W_B,mg_ca,1.020507002,1.020507002
-Youra,Y-W_B,mg_ca,0.959977367,0.959977367
-Youra,Y-W_B,mg_ca,0.992721154,0.992721154
-Youra,Y-W_B,mg_ca,0.901567061,0.901567061
-Youra,Y-W_B,mg_ca,0.817234261,0.817234261
-Youra,Y-W_B,mg_ca,0.839435494,0.839435494
-Youra,Y-W_B,mg_ca,0.834354451,0.834354451
-Youra,Y-W_B,mg_ca,0.923644499,0.923644499
-Youra,Y-W_B,mg_ca,0.80413914,0.80413914
-Youra,Y-W_B,mg_ca,0.756611208,0.756611208
-Youra,Y-W_B,mg_ca,0.770281278,0.770281278
-Youra,Y-W_B,mg_ca,0.835306665,0.835306665
-Youra,Y-W_B,mg_ca,0.828578603,0.828578603
-Youra,Y-W_B,mg_ca,0.732318674,0.732318674
-Youra,Y-W_B,mg_ca,0.710162749,0.710162749
-Youra,Y-W_B,mg_ca,0.640645869,0.640645869
-Youra,Y-W_B,mg_ca,0.672198271,0.672198271
-Youra,Y-W_B,mg_ca,0.680253119,0.680253119
-Youra,Y-W_B,mg_ca,0.615011772,0.615011772
-Youra,Y-W_B,mg_ca,0.622470253,0.622470253
-Youra,Y-W_B,mg_ca,0.617985539,0.617985539
-Youra,Y-W_B,mg_ca,0.586847297,0.586847297
-Youra,Y-W_B,mg_ca,0.576985646,0.576985646
-Youra,Y-W_B,mg_ca,0.565704475,0.565704475
-Youra,Y-W_B,mg_ca,0.618526759,0.618526759
-Youra,Y-W_B,mg_ca,0.664720269,0.664720269
-Youra,Y-W_B,mg_ca,0.665738567,0.665738567
-Youra,Y-W_B,mg_ca,0.645604289,0.645604289
-Youra,Y-W_B,mg_ca,0.634752009,0.634752009
-Youra,Y-W_B,mg_ca,0.674273111,0.674273111
-Youra,Y-W_B,mg_ca,0.679979846,0.679979846
-Youra,Y-W_B,mg_ca,0.647984056,0.647984056
-Youra,Y-W_B,mg_ca,0.673898717,0.673898717
-Youra,Y-W_B,mg_ca,0.601874985,0.601874985
-Youra,Y-W_B,mg_ca,0.653645796,0.653645796
-Youra,Y-W_B,mg_ca,0.638183993,0.638183993
-Youra,Y-W_B,mg_ca,0.587355809,0.587355809
-Youra,Y-W_B,mg_ca,0.568221572,0.568221572
-Youra,Y-W_B,mg_ca,0.629877717,0.629877717
-Youra,Y-W_B,mg_ca,0.626626517,0.626626517
-Youra,Y-W_B,mg_ca,0.649888907,0.649888907
-Youra,Y-W_B,mg_ca,0.712554147,0.712554147
-Youra,Y-W_B,mg_ca,0.716175449,0.716175449
-Youra,Y-W_B,mg_ca,0.765220778,0.765220778
-Youra,Y-W_B,mg_ca,0.858647809,0.858647809
-Youra,Y-W_B,mg_ca,0.895790182,0.895790182
-Youra,Y-W_B,mg_ca,0.960014416,0.960014416
+Youra,Y-W_B,mg_ca,1.04983271,0.076370905
+Youra,Y-W_B,mg_ca,0.893242731,0.056625275
+Youra,Y-W_B,mg_ca,0.741471003,0.078645729
+Youra,Y-W_B,mg_ca,0.713085675,0.04648011
+Youra,Y-W_B,mg_ca,0.688056261,0.052965144
+Youra,Y-W_B,mg_ca,0.711139592,0.043786534
+Youra,Y-W_B,mg_ca,0.758101467,0.04010333
+Youra,Y-W_B,mg_ca,0.671596835,0.025872191
+Youra,Y-W_B,mg_ca,0.658793043,0.056379155
+Youra,Y-W_B,mg_ca,0.639694042,0.021561552
+Youra,Y-W_B,mg_ca,0.667112028,0.054541281
+Youra,Y-W_B,mg_ca,0.628768176,0.0476116
+Youra,Y-W_B,mg_ca,0.627112292,0.032725452
+Youra,Y-W_B,mg_ca,0.655508741,0.054001517
+Youra,Y-W_B,mg_ca,0.751089632,0.037488005
+Youra,Y-W_B,mg_ca,0.815491088,0.058465631
+Youra,Y-W_B,mg_ca,0.872061944,0.04057624
+Youra,Y-W_B,mg_ca,0.857361235,0.087051696
+Youra,Y-W_B,mg_ca,0.903509436,0.062619228
+Youra,Y-W_B,mg_ca,0.951616465,0.095980894
+Youra,Y-W_B,mg_ca,0.801378479,0.037149285
+Youra,Y-W_B,mg_ca,0.8574769,0.045013075
+Youra,Y-W_B,mg_ca,0.949805271,0.069946346
+Youra,Y-W_B,mg_ca,0.925675557,0.067700542
+Youra,Y-W_B,mg_ca,0.932355364,0.063449818
+Youra,Y-W_B,mg_ca,1.020507002,0.06541333
+Youra,Y-W_B,mg_ca,0.959977367,0.053104167
+Youra,Y-W_B,mg_ca,0.992721154,0.078980735
+Youra,Y-W_B,mg_ca,0.901567061,0.072502279
+Youra,Y-W_B,mg_ca,0.817234261,0.036265666
+Youra,Y-W_B,mg_ca,0.839435494,0.043420044
+Youra,Y-W_B,mg_ca,0.834354451,0.037825167
+Youra,Y-W_B,mg_ca,0.923644499,0.060766057
+Youra,Y-W_B,mg_ca,0.80413914,0.053800571
+Youra,Y-W_B,mg_ca,0.756611208,0.046319166
+Youra,Y-W_B,mg_ca,0.770281278,0.051279254
+Youra,Y-W_B,mg_ca,0.835306665,0.04611334
+Youra,Y-W_B,mg_ca,0.828578603,0.033339809
+Youra,Y-W_B,mg_ca,0.732318674,0.058473654
+Youra,Y-W_B,mg_ca,0.710162749,0.040001416
+Youra,Y-W_B,mg_ca,0.640645869,0.030410211
+Youra,Y-W_B,mg_ca,0.672198271,0.065945109
+Youra,Y-W_B,mg_ca,0.680253119,0.059770425
+Youra,Y-W_B,mg_ca,0.615011772,0.021203514
+Youra,Y-W_B,mg_ca,0.622470253,0.01977095
+Youra,Y-W_B,mg_ca,0.617985539,0.035133557
+Youra,Y-W_B,mg_ca,0.586847297,0.038730399
+Youra,Y-W_B,mg_ca,0.576985646,0.045996211
+Youra,Y-W_B,mg_ca,0.565704475,0.039067433
+Youra,Y-W_B,mg_ca,0.618526759,0.041477252
+Youra,Y-W_B,mg_ca,0.664720269,0.026086215
+Youra,Y-W_B,mg_ca,0.665738567,0.049211314
+Youra,Y-W_B,mg_ca,0.645604289,0.032425438
+Youra,Y-W_B,mg_ca,0.634752009,0.031085326
+Youra,Y-W_B,mg_ca,0.674273111,0.038296454
+Youra,Y-W_B,mg_ca,0.679979846,0.03498618
+Youra,Y-W_B,mg_ca,0.647984056,0.046966373
+Youra,Y-W_B,mg_ca,0.673898717,0.045329531
+Youra,Y-W_B,mg_ca,0.601874985,0.034418339
+Youra,Y-W_B,mg_ca,0.653645796,0.032632528
+Youra,Y-W_B,mg_ca,0.638183993,0.037679299
+Youra,Y-W_B,mg_ca,0.587355809,0.066519928
+Youra,Y-W_B,mg_ca,0.568221572,0.032201923
+Youra,Y-W_B,mg_ca,0.629877717,0.03387146
+Youra,Y-W_B,mg_ca,0.626626517,0.035041724
+Youra,Y-W_B,mg_ca,0.649888907,0.022295929
+Youra,Y-W_B,mg_ca,0.712554147,0.047708829
+Youra,Y-W_B,mg_ca,0.716175449,0.037943411
+Youra,Y-W_B,mg_ca,0.765220778,0.041543375
+Youra,Y-W_B,mg_ca,0.858647809,0.04995573
+Youra,Y-W_B,mg_ca,0.895790182,0.047403892
+Youra,Y-W_B,mg_ca,0.960014416,0.043270837
 Youra,Y-S_C,d18o,1.32,0.05
 Youra,Y-S_C,d18o,1.48,0.03
 Youra,Y-S_C,d18o,1.11,0.03
@@ -2496,7 +2496,7 @@ Youra,Y-S_C,d18o,1.93,0.06
 Youra,Y-S_C,d18o,2.19,0.04
 Youra,Y-S_C,d18o,1.83,0.05
 Youra,Y-S_C,d18o,1.62,0.04
-Youra,Y-S_C,d18o,1.40,0.05
+Youra,Y-S_C,d18o,1.4,0.05
 Youra,Y-S_C,d18o,1.33,0.06
 Youra,Y-S_C,d18o,1.07,0.07
 Youra,Y-S_C,d18o,0.74,0.06

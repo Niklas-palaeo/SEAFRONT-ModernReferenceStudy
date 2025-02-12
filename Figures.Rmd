@@ -35,9 +35,9 @@ PALETTE_expanded <-c(
   
 
   # Greens
-  "#009E73",  # Green 1
-  "#66C2A5",  # Green 2
-  "#2CA25F",  # Green 3
+  # "#009E73",  # Green 1
+  # "#66C2A5",  # Green 2
+  # "#2CA25F",  # Green 3
   "#238B45",  # Green 4 (darker)
   "#2CA25F",  # Green 5
   "#99D8C9",  # Green 6 (lighter)
@@ -72,11 +72,14 @@ ElementSeasonData <- tibble(
 
 No_Offsets <- read_excel(here("data","calculations2.xlsx"), sheet = "Sheet3") %>% 
   pivot_longer(cols = everything(), names_to = "location", values_to = "sst") %>% 
-  mutate(location = factor(location, levels = c("Faro Punta Sottile","Tonnara del Secco","Franchthi","Youra")))
+  mutate(location = factor(location, levels = c("Faro Punta Sottile","Tonnara del Secco","Franchthi","Youra"))) %>% 
+    rename(sst_off=sst)
+
 
 Offsets <- read_excel(here("data","calculations2.xlsx"), sheet = "Sheet2") %>% 
   pivot_longer(cols = everything(), names_to = "location", values_to = "sst") %>% 
-  mutate(location = factor(location, levels = c("Faro Punta Sottile","Tonnara del Secco","Franchthi","Youra")))
+  mutate(location = factor(location, levels = c("Faro Punta Sottile","Tonnara del Secco","Franchthi","Youra"))) %>% 
+  rename(sst_off=sst)
 
 
 # Below for modern SST
@@ -123,6 +126,119 @@ ModSeq <- read_csv(here("data","ModernSequences.csv"),col_names = TRUE,show_col_
 
 # Figures
 
+
+
+```{r Edge Value sst}
+library(outliers)
+library(ggpmisc)
+
+SST_Comp <- tibble::tribble(
+                        ~location,       ~sample_name, ~calculated_sst,  ~sst,
+                      "Franchthi",  "FR-P_20210515_A",              22.93, 19.01,
+                      "Franchthi",  "FR-P_20210515_B",               22.78, 19.01,
+                      "Franchthi",  "FR-P_20210515_C",              22.84, 19.01,
+                      "Franchthi",  "FR-P_20210515_D",              21.44, 19.01,
+                      "Franchthi",  "FR-P_20210515_E",              24.25, 19.01,
+                      "Franchthi",  "FR-P_20210515_F",               22.99, 19.01,
+                      "Franchthi",  "FR-P_20210515_G",              22.85, 19.01,
+                      "Franchthi",  "FR-P_20210515_H",              23.43, 19.01,
+                      "Franchthi",  "FR-P_20210515_I",              22.71, 19.01,
+                      "Franchthi",  "FR-P_20210515_J",              23.65, 19.01,
+                          "Youra",   "Y-S_20210917_A",              16.05, 26.87,
+                          "Youra",   "Y-S_20210917_C",               15.48, 26.87,
+                          "Youra",   "Y-W_20210917_B",              21.62, 26.87,
+                          "Youra",   "Y-W_20210917_G",              16.23, 26.87,
+                      "Favignana", "FPS-W_20230518_A",              14.16, 20.66,
+                      "Favignana", "FPS-E_20230518_C",              12.61, 20.66,
+                      "Favignana", "FPS-E_20230518_D",              13.86, 20.66,
+              "Tonnara del Secco",  "TS-E_20230516_A",               14.57, 18.59,
+              "Tonnara del Secco",  "TS-E_20230516_B",              18.18, 18.59,
+              "Tonnara del Secco",  "TS-W_20230516_B",              15.98, 18.59
+              )
+
+# Apply Grubbs' test and Modified Z-score by location
+SST_Comp_outliers <- SST_Comp %>%
+  group_by(location) %>%
+  mutate(
+   # Grubbs' test: Only applied to "Youra" if n > 2 and only for the maximum value in calculated_sst
+    grubbs_outlier = ifelse(location == "Youra" & n() > 2 & calculated_sst == max(calculated_sst),
+                            outliers::grubbs.test(calculated_sst, type = 10)$p.value < 0.05,
+                            NA),
+    
+    # Modified Z-score
+    median_sst = median(calculated_sst, na.rm = TRUE),
+    mad_sst = mad(calculated_sst, constant = 1, na.rm = TRUE),
+    modified_z_score = 0.6745 * (calculated_sst - median_sst) / mad_sst,
+    modified_z_outlier = abs(modified_z_score) > 3.5
+  ) %>%
+  ungroup()
+
+SST_Comp_outliers <- SST_Comp_outliers %>%
+  group_by(location) %>%
+  mutate(mean_calculated_sst = mean(calculated_sst[modified_z_outlier == FALSE], na.rm = TRUE)) %>%
+  mutate(offset = round(sst-mean_calculated_sst,1)) %>% 
+  mutate(midpoint_y = (mean_calculated_sst + sst) / 2 ) %>% 
+  ungroup()
+
+
+p1 <-
+  SST_Comp_outliers %>% 
+  ggplot()+
+    aes(sst,calculated_sst,col=location)+
+  geom_point(alpha=0.2,show.legend = FALSE)+
+  geom_point(aes(alpha=modified_z_outlier),show.legend=FALSE)+
+    geom_point(aes(y = mean_calculated_sst,x=sst), size = 4, shape = 6,show.legend = FALSE) +
+  # Add a line connecting each mean to the y-axis at its x equivalent
+  geom_segment(aes(x=sst,xend = sst, y = mean_calculated_sst, yend = sst),
+               linetype = "dashed", linewidth = 0.21,show.legend = FALSE) +
+geom_text(aes(x = sst + 1.2, y = midpoint_y, label = sprintf("%.1f ºC", offset)),
+          vjust = -0.5, size = 4, fontface = "bold", show.legend = FALSE) +
+  scale_alpha_discrete(range = c(1,0.2))+
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
+  scale_colour_manual(values = PALETTE) +
+  xlim(15,30)+
+  coord_fixed()+
+  labs(col="",x="Measured SST in ºC",y= "Calculated SST in ºC")
+
+
+p2 <- SST_Comp_outliers %>% 
+              mutate(calculated_sst = case_when(location == "Youra" ~ calculated_sst + 10.9,
+                                                location == "Franchthi" ~ calculated_sst -3.9,
+                                                location == "Tonnara del Secco" ~ calculated_sst + 2.39,
+                                                TRUE ~ calculated_sst+7.1
+                                               )
+                     ) %>% 
+  ggplot()+
+    aes(sst,calculated_sst,col=location,group=location)+
+  geom_smooth(aes(group=1),method = "lm",linewidth=0,show.legend = FALSE)+
+  geom_point(alpha=1)+
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
+  scale_colour_manual(values = PALETTE) +
+  stat_poly_eq(
+    aes(group=1,label = paste(..rr.label.., ..p.value.label.., sep = "~~~")),
+    label.x = "left", label.y = "top",
+    formula = y ~ x, parse = TRUE,size=6
+  )+
+  xlim(15,30)+
+  ylim(15,30)+
+  labs(col="",x="Measured SST in ºC",y= "Calculated SST in ºC")
+
+Fig_Edges <- (p1|p2)+plot_layout(guides = "collect")&theme(legend.position = "bottom",legend.justification = "center")
+
+
+ggsave(
+  plot =   Fig_Edges,
+  filename = here("Figures","Fig_Edges.png"),
+  width = 30,
+  height = 15,
+  units = "cm",
+  dpi = 300
+)
+
+```
+
+
+
 ```{r Modern Sequences}
 
 # List of unique shells
@@ -144,42 +260,46 @@ for (shell_name in shells) {
     aes(sequence, value, col = shell) +
     geom_path(show.legend = FALSE) +
     geom_point(show.legend = FALSE) +
+    geom_errorbar(aes(ymin=value-std,ymax=value+std),show.legend=FALSE)+
     scale_colour_manual(values = PALETTE_expanded[which(shells == shell_name)]) +
     scale_fill_manual(values = PALETTE_expanded[which(shells == shell_name)]) +
     scale_y_reverse(breaks = scales::pretty_breaks(n = 3)) + # Ensures full integers
-    labs(x = "Distance to edge by sample number", y = bquote(delta^18*O~ (VPDB)),title = paste(shell_name)) +
-    theme_cowplot()
-  
+    labs(x = "Distance to edge by sample number",subtitle = bquote(delta^18*O), y = expression(paste(delta^{18},"O (\u2030 VPDB)")),title = paste(shell_name)) +
+    theme_cowplot(12)
+
   
   # Plot for MgCa
   MgCa_plot <- 
     ModSeq %>% 
     filter(shell == shell_name, proxy == "mg_ca") %>% 
+    filter(std<0.1) %>% 
     ggplot() +
     aes(sequence, value, col = shell) +
     geom_path(show.legend = FALSE) +
     geom_point(show.legend = FALSE) +
+    geom_errorbar(aes(ymin=value-std,ymax=value+std),show.legend=FALSE)+
     scale_colour_manual(values = PALETTE_expanded[which(shells == shell_name)]) +
     scale_fill_manual(values = PALETTE_expanded[which(shells == shell_name)]) +
     scale_y_continuous(breaks = scales::pretty_breaks(n = 3)) + # Ensures full integers
-    labs(x = "Distance to edge [mm]", title = paste(shell_name),y="Mg/Ca intensity ratio (a.u.)") +
-    theme_cowplot()
+    labs(x = "Distance to edge [mm]",title="", subtitle = "Mg/Ca",y="Mg/Ca (a.u.)") +
+    theme_cowplot(12)
   
   # Add the two plots (d18O and MgCa) to the list
   plot_list[[length(plot_list) + 1]] <- plot_grid(d18O_plot, MgCa_plot, ncol = 2)
 }
 
 # Arrange all the plots in a grid (14 rows, 2 columns for each pair)
-final_plot_A <- plot_grid(plotlist = plot_list[1:6], ncol = 1)
-final_plot_B <- plot_grid(plotlist = plot_list[7:10], ncol = 1)
-final_plot_C <- plot_grid(plotlist = plot_list[11:14], ncol = 1)
+final_plot_A <- plot_grid(plotlist = plot_list[c(2,1,3)], ncol = 1)
+final_plot_B <- plot_grid(plotlist = plot_list[4:7], ncol = 1)
+final_plot_C <- plot_grid(plotlist = plot_list[c(8,10,9)], ncol = 1)
+final_plot_D <- plot_grid(plotlist = plot_list[c(11,13,12,14)], ncol = 1)
 
 
 ggsave(
   plot =   final_plot_A,
   filename = here("Figures","FigModSeq1.png"),
   width = 25,
-  height = 50,
+  height = 30,
   units = "cm",
   dpi = 300
 )
@@ -196,11 +316,19 @@ ggsave(
   plot =   final_plot_C,
   filename = here("Figures","FigModSeq3.png"),
   width = 25,
-  height = 40,
+  height = 30,
   units = "cm",
   dpi = 300
 )
 
+ggsave(
+  plot =   final_plot_D,
+  filename = here("Figures","FigModSeq4.png"),
+  width = 25,
+  height = 30,
+  units = "cm",
+  dpi = 300
+)
 
 
 ```
@@ -211,19 +339,19 @@ ggsave(
 
 ```{r Results LIBS Seasons}
 
-ElementSeasonData %>% 
-  ggplot()+
-  aes(result,count,fill=result)+
-  geom_col(col="black",show.legend=FALSE)+
-scale_fill_manual(
-  values = c('Preceding' = '#d73027',        # Red shade
-             'Preceding/\nActual' = '#fc8d59',  # Lighter red
-             'Actual' = '#f7f7f7',            # Neutral (white-grey centre)
-             'Subsequent/\nActual' = '#b2abd2', # Light purple/grey transition (for Subsequent/Actual)
-             'Subsequent' = '#4575b4',        # Deeper blue for Subsequent
-             'Uncertain' = 'darkgrey')        # Darker grey for Uncertain
-)+
-  labs(x="")
+# ElementSeasonData %>% 
+#   ggplot()+
+#   aes(result,count,fill=result)+
+#   geom_col(col="black",show.legend=FALSE)+
+# scale_fill_manual(
+#   values = c('Preceding' = '#d73027',        # Red shade
+#              'Preceding/\nActual' = '#fc8d59',  # Lighter red
+#              'Actual' = '#f7f7f7',            # Neutral (white-grey centre)
+#              'Subsequent/\nActual' = '#b2abd2', # Light purple/grey transition (for Subsequent/Actual)
+#              'Subsequent' = '#4575b4',        # Deeper blue for Subsequent
+#              'Uncertain' = 'darkgrey')        # Darker grey for Uncertain
+# )+
+#   labs(x="")
 
 
 ```
@@ -231,7 +359,7 @@ scale_fill_manual(
 
 ```{r Offsets}
 
-NoOffPlot <- ggplot(No_Offsets, aes(y = location, x = sst,fill=location, col=location)) +
+NoOffPlot <- ggplot(No_Offsets, aes(y = location, x = sst_off,fill=location, col=location)) +
   geom_boxplot(width=1,show.legend=FALSE,outliers = FALSE,alpha=0.2)+
   geom_point(show.legend = FALSE,size=1) +
   geom_vline(xintercept = 0,linetype="dashed")+
@@ -243,7 +371,7 @@ NoOffPlot <- ggplot(No_Offsets, aes(y = location, x = sst,fill=location, col=loc
        x = "")
 
 
-OffPlot <- ggplot(Offsets, aes(y = location, x = sst,fill=location, col=location)) +
+OffPlot <- ggplot(Offsets, aes(y = location, x = sst_off,fill=location, col=location)) +
   geom_boxplot(width=1,show.legend=FALSE,outliers = FALSE,alpha=0.2)+
   geom_point(show.legend = FALSE,size=1) +
   geom_vline(xintercept = 0,linetype="dashed")+
@@ -256,14 +384,14 @@ OffPlot <- ggplot(Offsets, aes(y = location, x = sst,fill=location, col=location
 
 
 NoOffPlot/OffPlot+plot_annotation(tag_levels = "A")
-
-ggsave(
-  filename = here("Figures","FigOffsets.png"),
-  width = 17,
-  height = 16,
-  units = "cm",
-  dpi = 300
-)
+# 
+# ggsave(
+#   filename = here("Figures","FigOffsets.png"),
+#   width = 17,
+#   height = 16,
+#   units = "cm",
+#   dpi = 300
+# )
 ```
 
 ```{r SSTs}
@@ -284,25 +412,22 @@ ggplot(SSTs, aes(x = month, y = temperature, color = location, group = location)
   theme(legend.position = c(0.1, 0.6)) + 
   ylim(13, 28)                            
 
-ggsave(
-  filename = here("Figures","FigSST.png"),
-  width = 17,          
-  height = 12,        
-  units = "cm",         
-  dpi = 300              
-)
+# ggsave(
+#   filename = here("Figures","FigSST.png"),
+#   width = 17,          
+#   height = 12,        
+#   units = "cm",         
+#   dpi = 300              
+# )
 ```
 
 ```{r Correlations}
 
-# New palette
-
-ModSeq %>% ungroup() %>% select(shell) %>% unique()
 
 
-
-Plot_Corr <- Correlation %>% 
-  filter(!(shell=="FR-P_A"|shell=="FR-P_B"|shell=="FR-P_C")) %>% 
+Plot_Corr <- 
+  Correlation %>% 
+  filter(!(shell=="FR-P_A"|shell=="FR-P_B"|shell=="FR-P_D")) %>% 
   pivot_wider(names_from = "proxy", values_from = "value") %>% 
   mutate(location = case_when(
     str_starts(shell, "FPS") ~ "Faro Punta Sottile",
@@ -313,16 +438,17 @@ Plot_Corr <- Correlation %>%
   mutate(location = factor(location, levels = c("Faro Punta Sottile", "Tonnara del Secco", "Franchthi", "Youra"))) %>% 
   arrange(x) %>% 
   ggplot()+
-  aes(x=d18o,y=mg_ca,col=shell)+
+  aes(y=d18o,x=mg_ca,col=shell)+
   geom_point(show.legend = FALSE,size=1)+
-  labs(x=expression(paste(delta^{18},"O (\u2030)")),y="Mg/Ca intensity ratio")+
+  labs(y=expression(paste(delta^{18},"O (\u2030 VPDB)")),x="Mg/Ca intensity ratio")+
   stat_smooth(aes(fill = shell,col=shell), method = "lm", formula = y~x,show.legend = FALSE) +
-  facet_wrap(~location)+
+   facet_wrap(~location)+
   scale_colour_manual(values = PALETTE_expanded)+
   scale_fill_manual(values = PALETTE_expanded)+
   theme(
-  strip.background = element_rect(fill = "white", colour = "white"),  # White background and border
-  strip.text = element_text(hjust = 0))
+        strip.background = element_rect(fill = "white", colour = "white"),  # White background and border
+        strip.text = element_text(hjust = 0)
+        )
 
 
  
@@ -339,8 +465,10 @@ Plot_Corr <- Correlation %>%
 
 
 library(gt)
+library(webshot2)
 
 Summary_Correlation <- Correlation %>% 
+    filter(!(shell=="FR-P_A"|shell=="FR-P_B"|shell=="FR-P_D")) %>% 
   pivot_wider(names_from = "proxy", values_from = "value") %>% 
   mutate(location = case_when(
     str_starts(shell, "FPS") ~ "Faro Punta Sottile",
@@ -351,13 +479,16 @@ Summary_Correlation <- Correlation %>%
   mutate(location = factor(location, levels = c("Faro Punta Sottile", "Tonnara del Secco", "Franchthi", "Youra"))) %>% 
   group_by(shell) %>%
   summarise(
-    r_squared = summary(lm(mg_ca ~ d18o))$r.squared,  # Calculate R^2 value
-    location = first(location)  # Get location for each shell
+    r_squared = summary(lm(mg_ca ~ d18o))$r.squared,
+    p_value = pf(summary(lm(mg_ca ~ d18o))$fstatistic[1], 
+                 summary(lm(mg_ca ~ d18o))$fstatistic[2], 
+                 summary(lm(mg_ca ~ d18o))$fstatistic[3], 
+                 lower.tail = FALSE), 
+    location = first(location) 
   ) %>%
-  ungroup() %>%  # Ungroup for tidy output
-  select(location, shell, r_squared)   # Select relevant columns
-  # mutate(  # Assign corresponding colour to each shell
-  #        location = ifelse(duplicated(location), "", as.character(location)))  # Only show first instance of location
+  ungroup() %>%
+  mutate(    p_value = formatC(p_value, format = "e", digits = 0)) %>% 
+  select(location, shell, r_squared,p_value)   
 
 
 
@@ -366,28 +497,15 @@ Table <- Summary_Correlation %>%
     dplyr::mutate(color = "") |>
   gt(groupname_col = "location") %>%
   cols_label(
-    # location = "Location",
     shell = "Shell",
-    r_squared = html("R<sup>2</sup> Value"),
+    r_squared = html("R<sup>2</sup> value"),
+    p_value = "p-value",
     color = ""
   ) %>%
-# data_color(
-#     columns = population,
-#     target_columns = color,
-#     method = "numeric",
-#     palette = "viridis",
-#     domain = c(4E7, 7E7)
-#   )
-    # data_color(columns = shell, palette = PALETTE_expanded) %>% 
     data_color(columns = shell,target_columns = shell, palette = PALETTE_expanded,ordered = TRUE) %>% 
-  cols_width( shell ~ px(100), r_squared ~ px(100), color ~ px(10)) |>
-
-  # tab_style(
-  #   style = cell_text(color = Summary_Correlation$shell_colour),  # Use pre-calculated colours
-  #   locations = cells_body(columns = "shell")
-  # ) %>%
+  cols_width( shell ~ px(100), r_squared ~ px(100),p_value~px(50)) |>
   tab_header(
-    title = "Correlation Table by Shell and Location"
+    title = "Correlation Table"
   ) %>%
   cols_align(
     align = "left", columns = c("shell")
@@ -399,11 +517,12 @@ Table <- Summary_Correlation %>%
     columns = "r_squared", decimals = 2
   )
 
+
 Plot_Corr+wrap_table(Table,space = "fixed")
  
 ggsave(
   filename = here("Figures","FigCorrelations.png"),
-  width = 40,
+  width = 30,
   height = 30,
   units = "cm",
   dpi = 300
