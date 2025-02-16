@@ -226,14 +226,14 @@ p2 <- SST_Comp_outliers %>%
 Fig_Edges <- (p1|p2)+plot_layout(guides = "collect")&theme(legend.position = "bottom",legend.justification = "center")
 
 
-ggsave(
-  plot =   Fig_Edges,
-  filename = here("Figures","Fig_Edges.png"),
-  width = 30,
-  height = 15,
-  units = "cm",
-  dpi = 300
-)
+# ggsave(
+#   plot =   Fig_Edges,
+#   filename = here("Figures","Fig_Edges.png"),
+#   width = 30,
+#   height = 15,
+#   units = "cm",
+#   dpi = 300
+# )
 
 ```
 
@@ -295,40 +295,40 @@ final_plot_C <- plot_grid(plotlist = plot_list[c(8,10,9)], ncol = 1)
 final_plot_D <- plot_grid(plotlist = plot_list[c(11,13,12,14)], ncol = 1)
 
 
-ggsave(
-  plot =   final_plot_A,
-  filename = here("Figures","FigModSeq1.png"),
-  width = 25,
-  height = 30,
-  units = "cm",
-  dpi = 300
-)
-
-ggsave(
-  plot =   final_plot_B,
-  filename = here("Figures","FigModSeq2.png"),
-  width = 25,
-  height = 40,
-  units = "cm",
-  dpi = 300
-)
-ggsave(
-  plot =   final_plot_C,
-  filename = here("Figures","FigModSeq3.png"),
-  width = 25,
-  height = 30,
-  units = "cm",
-  dpi = 300
-)
-
-ggsave(
-  plot =   final_plot_D,
-  filename = here("Figures","FigModSeq4.png"),
-  width = 25,
-  height = 30,
-  units = "cm",
-  dpi = 300
-)
+# ggsave(
+#   plot =   final_plot_A,
+#   filename = here("Figures","FigModSeq1.png"),
+#   width = 25,
+#   height = 30,
+#   units = "cm",
+#   dpi = 300
+# )
+# 
+# ggsave(
+#   plot =   final_plot_B,
+#   filename = here("Figures","FigModSeq2.png"),
+#   width = 25,
+#   height = 40,
+#   units = "cm",
+#   dpi = 300
+# )
+# ggsave(
+#   plot =   final_plot_C,
+#   filename = here("Figures","FigModSeq3.png"),
+#   width = 25,
+#   height = 30,
+#   units = "cm",
+#   dpi = 300
+# )
+# 
+# ggsave(
+#   plot =   final_plot_D,
+#   filename = here("Figures","FigModSeq4.png"),
+#   width = 25,
+#   height = 30,
+#   units = "cm",
+#   dpi = 300
+# )
 
 
 ```
@@ -425,8 +425,7 @@ ggplot(SSTs, aes(x = month, y = temperature, color = location, group = location)
 
 
 
-Plot_Corr <- 
-  Correlation %>% 
+Plot_Corr_data <-   Correlation %>% 
   filter(!(shell=="FR-P_A"|shell=="FR-P_B"|shell=="FR-P_D")) %>% 
   pivot_wider(names_from = "proxy", values_from = "value") %>% 
   mutate(location = case_when(
@@ -436,19 +435,24 @@ Plot_Corr <-
     str_starts(shell, "Y")   ~ "Youra"
   )) %>%
   mutate(location = factor(location, levels = c("Faro Punta Sottile", "Tonnara del Secco", "Franchthi", "Youra"))) %>% 
-  arrange(x) %>% 
-  ggplot()+
-  aes(y=d18o,x=mg_ca,col=shell)+
-  geom_point(show.legend = FALSE,size=1)+
-  labs(y=expression(paste(delta^{18},"O (\u2030 VPDB)")),x="Mg/Ca intensity ratio")+
-  stat_smooth(aes(fill = shell,col=shell), method = "lm", formula = y~x,show.legend = FALSE) +
-   facet_wrap(~location)+
-  scale_colour_manual(values = PALETTE_expanded)+
-  scale_fill_manual(values = PALETTE_expanded)+
+  arrange(x)
+
+Plot_Corr <-
+Plot_Corr_data %>%
+  ggplot(aes(x = mg_ca, y = d18o)) +
+  geom_point(data = Plot_Corr_data %>% select(-location),aes(),colour = "grey80",size = 1,show.legend = FALSE) +
+  geom_point(aes(col = shell), size = 1, show.legend = FALSE) +
+  stat_smooth(aes(col = shell, fill = shell),method = "lm",formula = y ~ x,show.legend = FALSE) +
+  facet_wrap( ~ location) +
+  scale_colour_manual(values = PALETTE_expanded) +
+  scale_fill_manual(values = PALETTE_expanded) +
+  labs(y = expression(paste(delta ^ {
+    18
+  }, "O (\u2030 VPDB)")), x = "Mg/Ca intensity ratio") +
   theme(
-        strip.background = element_rect(fill = "white", colour = "white"),  # White background and border
-        strip.text = element_text(hjust = 0)
-        )
+    strip.background = element_rect(fill = "white", colour = "white"),
+    strip.text = element_text(hjust = 0)
+  )
 
 
  
